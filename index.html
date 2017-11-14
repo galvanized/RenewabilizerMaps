@@ -1,0 +1,35 @@
+<html>
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <style>
+  #mapid {
+    height: 100%;
+    width: 100%;
+  }
+  </style>
+</head>
+
+<body>
+<link rel="stylesheet" href="leaflet/leaflet.css", integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="/>
+
+
+
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
+
+ <div id="mapid"></div>
+
+
+<script>
+var map = L.map('mapid').setView([40.7, -74], 10);
+
+L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+  maxZoom: 18
+}).addTo(map);
+</script>
+
+ </body>
+
+ </html>
