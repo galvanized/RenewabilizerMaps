@@ -4,9 +4,25 @@
   <meta content="utf-8" http-equiv="encoding">
   <style>
   #mapid {
-    height: 100%;
-    width: 100%;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    top:10px;
+
+    z-index: -1;
+    position:absolute;
   }
+  #logo{
+    z-index:1000;
+    position:absolute;
+    right:10px;
+    top:0px;
+
+    max-width:70%;
+        width:300px;
+    background: rgba(230, 255, 230, 0.8);
+  }
+
   </style>
 </head>
 
@@ -16,11 +32,9 @@
 
 
 <!-- Make sure you put this AFTER Leaflet's CSS -->
+
+<div id="mapid"></div>
 <script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
-
- <div id="mapid"></div>
-
-
 <script>
 var map = L.map('mapid').setView([40.7, -74], 10);
 
@@ -29,6 +43,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 18
 }).addTo(map);
 </script>
+
+<div id="logo">
+ <img id="logo" src="resources/logo.svg" style="bottom:0px;top:10px;">
+ </div>
+
+
+
 
  </body>
 
