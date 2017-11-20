@@ -36,12 +36,23 @@
 <div id="mapid"></div>
 <script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
 <script>
-var map = L.map('mapid').setView([40.7, -74], 10);
+  var map = L.map('mapid').setView([40.7, -74], 3);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-  maxZoom: 18
-}).addTo(map);
+  var base_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    maxZoom: 18
+  }).addTo(map);
+
+  var pvout_layer = L.tileLayer('resources/photovoltaic-output/{z}/{x}/{y}.png', {
+    attribution: 'NREL',
+    maxZoom: 6,
+    tms: false
+  }).addTo(map);
+
+  pvout_layer.setOpacity(0.5);
+
+  L.control.layers({'base':base_layer},{'pvout':pvout_layer}).addTo(map);
+
 </script>
 
 <div id="logo">
