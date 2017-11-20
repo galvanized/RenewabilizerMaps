@@ -45,7 +45,8 @@
 
   var pvout_layer = L.tileLayer('resources/photovoltaic-output/{z}/{x}/{y}.png', {
     attribution: 'NREL',
-    maxZoom: 6,
+    maxZoom: 18,
+    maxNativeZoom: 6,
     tms: false
   }).addTo(map);
 
