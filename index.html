@@ -36,10 +36,40 @@
 <div id="mapid"></div>
 <script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
 <script>
+
+  function getTileURL(lat, lon, zoom) {
+    // https://stackoverflow.com/a/23058284
+    var xtile = parseInt(Math.floor( (lon + 180) / 360 * (1<<zoom) ));
+    var ytile = parseInt(Math.floor( (1 - Math.log(Math.tan(lat.toRad()) + 1 / Math.cos(lat.toRad())) / Math.PI) / 2 * (1<<zoom) ));
+    return "" + zoom + "/" + xtile + "/" + ytile;
+  }
+
+  function getColorAtCoords(lat, lon, zoom, layer_name){
+    // returns r, g, b, a
+    // https://stackoverflow.com/a/23058284
+    var x_val = (lon + 180) / 360 * (1<<zoom) ));
+    var x_tile = parseInt(Math.floor( x_val ));
+    var x_pix = (x_val % 1)*128;
+    var ytile = parseInt(Math.floor( (1 - Math.log(Math.tan(lat.toRad()) + 1 / Math.cos(lat.toRad())) / Math.PI) / 2 * (1<<zoom) ));
+    var img_url = "resources/" + layer_name + "/" + zoom + "/" + xtile + "/" + ytile + ".png";
+
+    // https://stackoverflow.com/a/10755011
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    var img = new Image(); image.src = img_url;//document.getElementById('myimg');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0 );
+    var myData = context.getImageData(0, 0, img.width, img.height);
+    console.log(myData);
+  }
+
   var map = L.map('mapid').setView([40.7, -74], 3);
 
   var base_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    continuousWorld: true,
+    detectRetina: true,
     maxZoom: 18
   }).addTo(map);
 
@@ -47,7 +77,8 @@
     attribution: 'NREL',
     maxZoom: 18,
     maxNativeZoom: 6,
-    tms: false
+    tms: false,
+    continuousWorld: true
   }).addTo(map);
 
   pvout_layer.setOpacity(0.5);
