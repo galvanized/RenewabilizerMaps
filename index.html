@@ -36,10 +36,59 @@
 <div id="mapid"></div>
 <script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
 <script>
+
+  function getTileURL(lat, lon, zoom) {
+    // https://stackoverflow.com/a/23058284
+    var xtile = parseInt(Math.floor( (lon + 180) / 360 * (1<<zoom) ));
+    var ytile = parseInt(Math.floor( (1 - Math.log(Math.tan(lat.toRad()) + 1 / Math.cos(lat.toRad())) / Math.PI) / 2 * (1<<zoom) ));
+    return "" + zoom + "/" + xtile + "/" + ytile;
+  }
+
+  function getColorAtCoords(lat, lon, zoom, layer_name){
+    // degrees to radians
+    lat *= Math.PI/180;
+    // returns r, g, b, a
+    // https://stackoverflow.com/a/23058284
+    var x_tile = parseInt(Math.floor( (lon + 180) / 360 * (1<<zoom) ));
+    var y_tile = parseInt(Math.floor( (1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 * (1<<zoom) ));
+
+    var img_url = "resources/" + layer_name + "/" + zoom + "/" + x_tile + "/" + y_tile + ".png";
+    console.info('src', img_url);
+
+    // https://stackoverflow.com/a/10755011
+    var img = document.createElement('img'); img.src = img_url;
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0);
+
+    var x_pix = parseInt( ((lon + 180) / 360 * (1<<zoom)) % 1 * img.width);
+    var y_pix = parseInt( ( (1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 * (1<<zoom) ) % 1 * img.width);
+    console.info(x_pix, y_pix);
+
+    var point_value = context.getImageData(x_pix, y_pix, x_pix+1, y_pix+1).data[0];
+    return point_value;
+  }
+
+  function getPowerAtCoords(latlng){
+    var color = 0;
+    var loops = 0;
+    while (color == 0 && loops < 5){
+      console.info(latlng);
+      color = getColorAtCoords(latlng.lat,latlng.lng,6,'photovoltaic-output');
+      loops += 1;
+    }
+    return color;
+  }
+
   var map = L.map('mapid').setView([40.7, -74], 3);
 
   var base_layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    continuousWorld: true,
+    detectRetina: true,
     maxZoom: 18
   }).addTo(map);
 
@@ -47,12 +96,27 @@
     attribution: 'NREL',
     maxZoom: 18,
     maxNativeZoom: 6,
-    tms: false
+    tms: false,
+    continuousWorld: true
   }).addTo(map);
 
   pvout_layer.setOpacity(0.5);
 
   L.control.layers({'base':base_layer},{'pvout':pvout_layer}).addTo(map);
+
+
+  var popup = L.popup();
+
+  function onMapClick(e) {
+    if (getPowerAtCoords(e.latlng)){
+      popup
+          .setLatLng(e.latlng)
+          .setContent("Your expected power is \n"+ getPowerAtCoords(e.latlng) + "\n kWh annually per square meter")
+          .openOn(map);
+    }
+  }
+
+  map.on('click', onMapClick);
 
 </script>
 
