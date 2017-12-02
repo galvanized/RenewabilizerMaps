@@ -44,6 +44,10 @@
     return "" + zoom + "/" + xtile + "/" + ytile;
   }
 
+  function remap(x, in_min, in_max, out_min, out_max){
+    return (x-in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
   function getColorAtCoords(lat, lon, zoom, layer_name){
     // degrees to radians
     lat *= Math.PI/180;
@@ -73,14 +77,14 @@
   }
 
   function getPowerAtCoords(latlng){
-    var color = 0;
-    var loops = 0;
-    while (color == 0 && loops < 5){
-      console.info(latlng);
-      color = getColorAtCoords(latlng.lat,latlng.lng,6,'photovoltaic-output');
-      loops += 1;
+    console.info(latlng);
+    color = getColorAtCoords(latlng.lat,latlng.lng,6,'photovoltaic-output');
+    if(color){
+      return Math.round(remap(color, 0, 255, 600, 2500));
     }
-    return color;
+    else{
+      return false;
+    }
   }
 
   var map = L.map('mapid').setView([40.7, -74], 3);
@@ -92,11 +96,11 @@
     maxZoom: 18
   }).addTo(map);
 
-  var pvout_layer = L.tileLayer('resources/photovoltaic-output/{z}/{x}/{y}.png', {
+  var pvout_layer = L.tileLayer('resources/pvout/{z}/{x}/{y}.png', {
     attribution: 'NREL',
     maxZoom: 18,
-    maxNativeZoom: 6,
-    tms: false,
+    maxNativeZoom: 5,
+    tms: true,
     continuousWorld: true
   }).addTo(map);
 
@@ -111,7 +115,7 @@
     if (getPowerAtCoords(e.latlng)){
       popup
           .setLatLng(e.latlng)
-          .setContent("Your expected power is \n"+ getPowerAtCoords(e.latlng) + "\n kWh annually per square meter")
+          .setContent("Your expected power is \n"+ getPowerAtCoords(e.latlng) + "\n kWh annually per kW installed")
           .openOn(map);
     }
   }
