@@ -35,8 +35,9 @@
 
 <div id="mapid"></div>
 <script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
+<link  href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" rel="stylesheet" />
+<script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
 <script>
-
   function getTileURL(lat, lon, zoom) {
     // https://stackoverflow.com/a/23058284
     var xtile = parseInt(Math.floor( (lon + 180) / 360 * (1<<zoom) ));
@@ -106,6 +107,7 @@
 
   pvout_layer.setOpacity(0.5);
 
+
   /*
 
   var wind_layer = L.tileLayer('resources/wind/{z}/{x}/{y}.png', {
@@ -134,6 +136,18 @@
   }
 
   map.on('click', onMapClick);
+
+  var GeoSearchControl = window.GeoSearch.GeoSearchControl;
+  var OpenStreetMapProvider = window.GeoSearch.OpenStreetMapProvider;
+
+  var provider = new OpenStreetMapProvider();
+
+  var searchControl = new GeoSearchControl({
+    provider: provider,
+    style: 'bar',
+  });
+
+  map.addControl(searchControl);
 
 </script>
 
