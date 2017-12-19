@@ -15,14 +15,12 @@
   #logo{
     z-index:1000;
     position:absolute;
-    right:10px;
+    left: 40px;
     top:5px;
-
     max-width:70%;
         width:300px;
     background: rgba(230, 255, 230, 0.3);
   }
-
   </style>
 </head>
 
@@ -102,10 +100,30 @@
     maxZoom: 18,
     maxNativeZoom: 5,
     tms: true,
-    continuousWorld: true
+    continuousWorld: true,
   }).addTo(map);
 
   pvout_layer.setOpacity(0.5);
+
+  var wind_layer = L.tileLayer('resources/wind/{z}/{x}/{y}.png', {
+    attribution: 'NREL',
+    maxZoom: 18,
+    maxNativeZoom: 6,
+    tms: true,
+    continuousWorld: true
+  });
+
+  wind_layer.setOpacity(0.5);
+
+  var geothermal_layer = L.tileLayer('resources/geothermal/{z}/{x}/{y}.png', {
+    attribution: 'NREL',
+    maxZoom: 18,
+    maxNativeZoom: 6,
+    tms: true,
+    continuousWorld: true
+  });
+
+  geothermal_layer.setOpacity(0.5);
 
 
   /*
@@ -148,6 +166,14 @@
   });
 
   map.addControl(searchControl);
+
+  var overlays = {
+    'Solar':pvout_layer,
+    'Wind':wind_layer,
+    'Geothermal':geothermal_layer
+  }
+
+  L.control.layers(overlays).addTo(map);
 
 </script>
 
