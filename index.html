@@ -21,6 +21,18 @@
         width:300px;
     background: rgba(230, 255, 230, 0.3);
   }
+  #help{
+    position:absolute;
+    text-align:center;
+    left:42%;
+    top:55px;
+    z-index: 99;
+    font-size:12px;
+    font-style:italic;
+    color: rgba(0, 0, 0, 0.7);
+    background: rgba(256, 256, 256, 0.2);
+
+  }
   </style>
 </head>
 
@@ -32,6 +44,7 @@
 <!-- Make sure you put this AFTER Leaflet's CSS -->
 
 <div id="mapid"></div>
+<div id="help">Slowly double-click to measure</div>
 <script src="leaflet/leaflet.js", integrity="sha512-/NcGbTmBye03YZgY60W1AUwrlKrIEGtuhYzZVIn82e424SFZ5IAuzBCn+l7zl8u2cjCJ6LgmhxQJWv6AYBknqA=="></script>
 <link  href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" rel="stylesheet" />
 <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
@@ -71,7 +84,8 @@
     var y_pix = parseInt( ( (1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 * (1<<zoom) ) % 1 * img.width);
     console.info(x_pix, y_pix);
 
-    var point_value = context.getImageData(x_pix, y_pix, x_pix+1, y_pix+1).data[0];
+    console.info(context.getImageData(x_pix, y_pix, x_pix+1, y_pix+1).data);
+    var point_value = context.getImageData(x_pix, y_pix, x_pix+1, y_pix+1).data[channel];
     return point_value;
   }
 
@@ -125,23 +139,6 @@
 
   geothermal_layer.setOpacity(0.5);
 
-
-  /*
-
-  var wind_layer = L.tileLayer('resources/wind/{z}/{x}/{y}.png', {
-    attribution: 'NREL',
-    maxZoom: 18,
-    maxNativeZoom: 6,
-    tms: true,
-    continuousWorld: true,
-    enabled: false
-  }).addTo(map);
-
-  wind_layer.setOpacity(0.5);*/
-
-  //L.control.layers({'base':base_layer},{'pvout':pvout_layer}).addTo(map);
-
-
   var popup = L.popup();
 
   function onMapClick(e) {
@@ -150,6 +147,7 @@
           .setLatLng(e.latlng)
           .setContent("Your expected power is \n"+ getPowerAtCoords(e.latlng) + "\n kWh annually per kW installed")
           .openOn(map);
+        getGeoClassAtCoords(e.latlng);
     }
   }
 
