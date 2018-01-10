@@ -60,7 +60,7 @@
     return (x-in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
 
-  function getColorAtCoords(lat, lon, zoom, layer_name){
+  function getColorAtCoords(lat, lon, zoom, layer_name, channel=0){
     // degrees to radians
     lat *= Math.PI/180;
     // returns r, g, b, a
